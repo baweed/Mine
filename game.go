@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -31,22 +32,32 @@ func NewGame(width, height, mineCount int) *Game {
 	rand.Seed(time.Now().UnixNano())
 
 	grid := make([][]Cell, height)
+
+	// Используем WaitGroup для синхронизации горутин
+	var wg sync.WaitGroup
+	wg.Add(height)
+
 	for y := range grid {
-		grid[y] = make([]Cell, width)
-		for x := range grid[y] {
-			grid[y][x] = Cell{
-				X: x,
-				Y: y,
+		go func(y int) { // Запускаем горутину для каждой строки
+			defer wg.Done()
+			grid[y] = make([]Cell, width)
+			for x := range grid[y] {
+				grid[y][x] = Cell{
+					X: x,
+					Y: y,
+				}
 			}
-		}
+		}(y)
 	}
+
+	wg.Wait() // Ждём завершения всех горутин
 
 	game := &Game{
 		Grid:           grid,
 		Width:          width,
 		Height:         height,
 		MineCount:      mineCount,
-		FlagsRemaining: mineCount, // Изначально флагов столько же, сколько мин
+		FlagsRemaining: mineCount,
 		GameOver:       false,
 		Win:            false,
 	}
