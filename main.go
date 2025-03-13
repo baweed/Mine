@@ -49,7 +49,10 @@ func handleClick(w http.ResponseWriter, r *http.Request) {
 	x, _ := strconv.Atoi(r.URL.Query().Get("x"))
 	y, _ := strconv.Atoi(r.URL.Query().Get("y"))
 
-	game.OpenCell(x, y)
+	// Запускаем обработку клика в горутине
+	go func() {
+		game.OpenCell(x, y)
+	}()
 
 	// Возвращаем обновлённое поле
 	tmpl.ExecuteTemplate(w, "game.html", game)
