@@ -116,6 +116,7 @@ func (g *Game) calculateNeighbors() {
 }
 
 // OpenCell открывает клетку по координатам (x, y)
+// OpenCell открывает клетку по координатам (x, y)
 func (g *Game) OpenCell(x, y int) {
 	if x < 0 || x >= g.Width || y < 0 || y >= g.Height {
 		return
@@ -129,15 +130,19 @@ func (g *Game) OpenCell(x, y int) {
 
 	cell.IsOpen = true
 
+	// Если это мина, игра заканчивается
 	if cell.IsMine {
 		g.GameOver = true
+		g.RevealAllMines() // Раскрываем все мины
 		return
 	}
 
+	// Если клетка пустая (Neighbors == 0), рекурсивно открываем соседей
 	if cell.Neighbors == 0 {
 		g.openNeighbors(x, y)
 	}
 
+	// Проверяем, выиграл ли игрок
 	g.checkWin()
 }
 
@@ -173,5 +178,17 @@ func (g *Game) checkWin() {
 	if openedSafeCells == totalSafeCells {
 		g.Win = true
 		g.GameOver = true
+	}
+}
+
+// RevealAllMines открывает все клетки с минами
+func (g *Game) RevealAllMines() {
+	for y := 0; y < g.Height; y++ {
+		for x := 0; x < g.Width; x++ {
+			cell := &g.Grid[y][x]
+			if cell.IsMine {
+				cell.IsOpen = true // Открываем клетку с миной
+			}
+		}
 	}
 }

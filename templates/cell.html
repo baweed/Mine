@@ -5,7 +5,7 @@
     data-x="{{ .Cell.X }}"
     data-y="{{ .Cell.Y }}"
 >
-    {{ if .Cell.IsOpen }}
+    {{ if or .Cell.IsOpen .Game.GameOver }}
         {{ if .Cell.IsMine }}
             <span class="mine">💣</span>
         {{ else if gt .Cell.Neighbors 0 }}
