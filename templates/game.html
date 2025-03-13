@@ -11,3 +11,9 @@
         </div>
     {{ end }}
 </div>
+
+{{ if .GameOver }}
+    <div class="game-over-container">
+        <h2>{{ if .Win }}You win!{{ else }}Game over!{{ end }}</h2>
+    </div>
+{{ end }}
