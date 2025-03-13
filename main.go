@@ -64,7 +64,11 @@ func handleClick(w http.ResponseWriter, r *http.Request) {
 
 // handleNewGame начинает новую игру
 func handleNewGame(w http.ResponseWriter, r *http.Request) {
-	game = NewGame(10, 10, 10)
+	width, _ := strconv.Atoi(r.URL.Query().Get("width"))
+	height, _ := strconv.Atoi(r.URL.Query().Get("height"))
+	mines, _ := strconv.Atoi(r.URL.Query().Get("mines"))
+
+	game = NewGame(width, height, mines)
 	tmpl.ExecuteTemplate(w, "game.html", game)
 }
 
