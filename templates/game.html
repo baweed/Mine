@@ -1,0 +1,20 @@
+<div id="game">
+    <div id="controls">
+        <div id="mine-counter">Mines: {{ .MineCount }}</div>
+        <div id="flag-counter">Flags: {{ .FlagsRemaining }}</div>
+    </div>
+    {{ range $y := .Grid }}
+        <div class="row">
+            {{ range $x := $y }}
+                {{ template "cell.html" $x }}
+            {{ end }}
+        </div>
+    {{ end }}
+</div>
+
+{{ if .GameOver }}
+    <div class="game-over-container">
+        <h2>{{ if .Win }}You win!{{ else }}Game over!{{ end }}</h2>
+
+    </div>
+{{ end }}

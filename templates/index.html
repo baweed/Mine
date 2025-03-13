@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script>
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault(); // Отключаем стандартное меню правой кнопки мыши
+            const button = e.target.closest('button');
+            if (button && !button.disabled) {
+                const x = button.getAttribute('data-x');
+                const y = button.getAttribute('data-y');
+                htmx.ajax('POST', `/flag?x=${x}&y=${y}`, { target: '#game', swap: 'innerHTML' });
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Minesweeper</h1>
+    <button id="new-game-button" hx-post="/new-game" hx-target="#game">New Game</button>
+    {{ template "game.html" . }}
+    {{ if .GameOver }}
+        <div class="game-over-container">
+            <h2>{{ if .Win }}You win!{{ else }}Game over!{{ end }}</h2>
+            <button hx-post="/new-game" hx-target="#game">New Game</button>
+        </div>
+    {{ end }}
+</body>
+</html>

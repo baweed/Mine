@@ -1,0 +1,19 @@
+<button
+    hx-post="/click?x={{ .X }}&y={{ .Y }}"
+    hx-target="#game"
+    {{ if .IsOpen }} disabled {{ end }}
+    data-x="{{ .X }}"
+    data-y="{{ .Y }}"
+>
+    {{ if .IsOpen }}
+        {{ if .IsMine }}
+            <span class="mine">💣</span>
+        {{ else if gt .Neighbors 0 }}
+            <span class="neighbor-{{ .Neighbors }}">{{ .Neighbors }}</span>
+        {{ end }}
+    {{ else if .IsFlagged }}
+        <span class="flag">🚩</span>
+    {{ else }}
+        ⬜
+    {{ end }}
+</button>
