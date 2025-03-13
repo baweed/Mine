@@ -1,17 +1,17 @@
 <button
-    hx-post="/click?x={{ .X }}&y={{ .Y }}"
+    hx-post="/click?x={{ .Cell.X }}&y={{ .Cell.Y }}"
     hx-target="#game"
-    {{ if .IsOpen }} disabled {{ end }}
-    data-x="{{ .X }}"
-    data-y="{{ .Y }}"
+    {{ if or .Cell.IsOpen .Game.GameOver }} disabled {{ end }}
+    data-x="{{ .Cell.X }}"
+    data-y="{{ .Cell.Y }}"
 >
-    {{ if .IsOpen }}
-        {{ if .IsMine }}
+    {{ if .Cell.IsOpen }}
+        {{ if .Cell.IsMine }}
             <span class="mine">💣</span>
-        {{ else if gt .Neighbors 0 }}
-            <span class="neighbor-{{ .Neighbors }}">{{ .Neighbors }}</span>
+        {{ else if gt .Cell.Neighbors 0 }}
+            <span class="neighbor-{{ .Cell.Neighbors }}">{{ .Cell.Neighbors }}</span>
         {{ end }}
-    {{ else if .IsFlagged }}
+    {{ else if .Cell.IsFlagged }}
         <span class="flag">🚩</span>
     {{ else }}
         ⬜

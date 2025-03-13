@@ -15,9 +15,13 @@ func main() {
 	// Инициализация игры
 	game = NewGame(10, 10, 10)
 
-	// Загрузка шаблонов
+	// Загрузка шаблонов с пользовательской функцией CellWithGame
 	var err error
-	tmpl, err = template.New("").ParseGlob("templates/*.html")
+	tmpl, err = template.New("").Funcs(template.FuncMap{
+		"CellWithGame": func(cell *Cell, game *Game) CellWithGame {
+			return CellWithGame{Cell: cell, Game: game}
+		},
+	}).ParseGlob("templates/*.html")
 	if err != nil {
 		panic("Failed to load templates: " + err.Error())
 	}
@@ -64,7 +68,6 @@ func handleNewGame(w http.ResponseWriter, r *http.Request) {
 	tmpl.ExecuteTemplate(w, "game.html", game)
 }
 
-// handleFlag обрабатывает установку флажка
 // handleFlag обрабатывает установку флажка
 func handleFlag(w http.ResponseWriter, r *http.Request) {
 	x, _ := strconv.Atoi(r.URL.Query().Get("x"))

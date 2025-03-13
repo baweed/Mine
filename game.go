@@ -8,23 +8,29 @@ import (
 
 // Cell описывает состояние одной клетки на поле
 type Cell struct {
-	IsMine    bool // Является ли клетка миной
-	IsOpen    bool // Открыта ли клетка
-	IsFlagged bool // Отмечена ли клетка флажком
-	Neighbors int  // Количество мин вокруг клетки
-	X         int  // Координата X
-	Y         int  // Координата Y
+	IsMine    bool
+	IsOpen    bool
+	IsFlagged bool
+	Neighbors int
+	X         int
+	Y         int
 }
 
 // Game описывает состояние игры
 type Game struct {
-	Grid           [][]Cell // Двумерный массив клеток
-	Width          int      // Ширина поля
-	Height         int      // Высота поля
-	MineCount      int      // Количество мин на поле
-	FlagsRemaining int      // Оставшееся количество флагов
-	GameOver       bool     // Флаг завершения игры
-	Win            bool     // Флаг победы
+	Grid           [][]Cell
+	Width          int
+	Height         int
+	MineCount      int
+	FlagsRemaining int
+	GameOver       bool
+	Win            bool
+}
+
+// CellWithGame используется для передачи данных в шаблон
+type CellWithGame struct {
+	Cell *Cell
+	Game *Game
 }
 
 // NewGame создаёт новую игру с заданными параметрами
@@ -33,12 +39,11 @@ func NewGame(width, height, mineCount int) *Game {
 
 	grid := make([][]Cell, height)
 
-	// Используем WaitGroup для синхронизации горутин
 	var wg sync.WaitGroup
 	wg.Add(height)
 
 	for y := range grid {
-		go func(y int) { // Запускаем горутину для каждой строки
+		go func(y int) {
 			defer wg.Done()
 			grid[y] = make([]Cell, width)
 			for x := range grid[y] {
@@ -50,7 +55,7 @@ func NewGame(width, height, mineCount int) *Game {
 		}(y)
 	}
 
-	wg.Wait() // Ждём завершения всех горутин
+	wg.Wait()
 
 	game := &Game{
 		Grid:           grid,
